@@ -4,7 +4,7 @@
 const app = require('express')();
 
 app.use((req,res)=>{
-  res.send('okokok');
+  res.sendu('okokok');
 });
 
 // app.get('/',(req,res)=>{

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="./jquery.min.js"></script>
+    <script type="text/javascript">
+    $(function(){
+        $('#btn').click(function(){
+            var obj={
+                username : $('#username').val(),
+                password : $('#password').val(),
+            }
+            $.ajax({
+                type:'get',
+                url:'http://localhost:3000/login',
+                dataType:'text',
+                contentType:'application/json',
+                // data:$('form:eq(0)').serialize()
+                data:JSON.stringify(obj),
+                success:function(data){
+                    console.log(data);
+                }
+            });
+        });
+    });
+    </script>
+    <title>登录验证</title>
+</head>
+<body>
+    <form action="http://localhost:3000/login" method="get">
+        用户名：<input type="text" name="username" id="username"><br>
+        密  码：<input type="password" name="password" id="password"><br>
+        <input type="button" value="登录" id="btn">
+    </form>
+</body>
+</html>

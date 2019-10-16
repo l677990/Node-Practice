@@ -9,20 +9,14 @@ const path=require('path');
 const fs=require('fs');
 const querystring=require('querystring');
 const scoreData=require('./scores.json');
+const template = require('art-template');
 http.createServer((req,res)=>{
     //查询成绩的入口地址 路径 /query
     //路由(请求路径+请求方式)
     if(req.url.startsWith('/query') && req.method=='GET'){
-        console.log('cnbb');
-        fs.readFile(path.join(__dirname,'view','index.tpl'),'utf8',(err,content)=>{
-            if(err){
-                res.writeHead(500,{
-                    'Content-Type':'text/plain;charset=utf8'
-                });
-                res.end('服务器错误1');
-            }
-            res.end(content);
-        });
+          //返回内容之前要进行数据渲染
+          let content=template(path.join(__dirname,'view','index.art'),{});
+          res.end(content);
     }else if(req.url.startsWith('/score')&&req.method=='POST'){
            //获取成绩的结果 /score
            let pdata = '';
@@ -32,20 +26,9 @@ http.createServer((req,res)=>{
            req.on('end',()=>{
                let obj=querystring.parse(pdata);
                let result = scoreData[obj.code];
-               fs.readFile(path.join(__dirname,'view','result.tql'),'utf8',(err,content)=>{
-                    if(err){
-                        res.writeHead(500,{
-                            'Content-Type':'text/plain;charset=utf8'
-                        });
-                        res.end('服务器错误2');
-                    }
-                    //返回内容之前要进行数据渲染
-                    content=content.replace('$$chinese$$',result.chinese);
-                    content=content.replace('$$math$$',result.math);
-                    content=content.replace('$$english$$',result.english);
-                    content=content.replace('$$summary$$',result.summary);
-                    res.end(content);
-               });
+                //返回内容之前要进行数据渲染
+                let content=template(path.join(__dirname,'view','result.art'),result);
+                res.end(content);
            });
     }
 }).listen(3000,()=>{
